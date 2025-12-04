@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Cart - EasePharma{% endblock %}
+{% block content %}
+<h3>Your Cart</h3>
+{% if items %}
+<table class="table">
+  <thead><tr><th>Product</th><th>Qty</th><th>Subtotal</th></tr></thead>
+  <tbody>
+    {% for it in items %}
+      <tr>
+        <td>{{ it.product.name }}</td>
+        <td>{{ it.qty }}</td>
+        <td>${{ "%.2f"|format(it.subtotal) }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<div class="d-flex justify-content-between mt-3">
+  <h5>Total: ${{ "%.2f"|format(total) }}</h5>
+  <a class="btn btn-teal" href="{{ url_for('product.checkout') }}">Proceed to Checkout</a>
+</div>
+{% else %}
+<p>Your cart is empty.</p>
+{% endif %}
+{% endblock %}
