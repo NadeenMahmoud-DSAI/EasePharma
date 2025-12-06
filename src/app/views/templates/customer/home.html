@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Home - EasePharma{% endblock %}
+{% block content %}
+
+<div class="promo-box mb-4 text-center p-3 rounded shadow-sm" style="background-color: #e0f2f1; color: #004d40; border-left: 5px solid #008080;">
+    <strong>Order here. NOW — Get fast delivery on all OTC medicines.</strong>
+</div>
+
+<section class="mb-5">
+  <h5 class="fw-bold mb-3 border-bottom pb-2" style="color: #008080;">Shop by Categories</h5>
+  <div class="row g-3">
+    {% set categories = [
+        ('Must Haves', '008080'), 
+        ('Winter Store', '00695c'), 
+        ('Vitamins', '004d40'), 
+        ('Personal Care', '26a69a')
+    ] %}
+    
+    {% for name, color in categories %}
+      <div class="col-6 col-md-3">
+        <a href="{{ url_for('product.search') }}?q={{ name }}" class="category-card d-block shadow-sm text-decoration-none position-relative" 
+           style="height: 100px; background-color: #{{ color }}; border-radius: 12px; overflow: hidden;">
+           <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;">
+             <span class="text-white fw-bold">{{ name }}</span>
+           </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="mb-5">
+  <h5 class="fw-bold mb-3 border-bottom pb-2" style="color: #008080;">Featured Products</h5>
+  {% if products %}
+    <div class="row g-4">
+      {% for p in products %}
+        <div class="col-6 col-md-3">
+          <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body p-2 text-center">
+               <img src="{{ p.image or url_for('static', filename='placeholder.png') }}" style="max-height: 80px;" alt="{{ p.name }}">
+               <div class="text-truncate fw-bold mt-2">{{ p.name }}</div>
+               <div class="text-teal">${{ '%.2f'|format(p.price) }}</div>
+               <form action="{{ url_for('product.add_to_cart', id=p.id) }}" method="POST" class="mt-2">
+                 <button class="btn btn-sm w-100 text-white" style="background-color: #008080;">Add</button>
+               </form>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-5">No products found.</div>
+  {% endif %}
+</section>
+{% endblock %}
