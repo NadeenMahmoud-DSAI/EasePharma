@@ -1,0 +1,2 @@
+﻿id,sku,name_en,name_ar,category,price,stock_quantity,description_en,description_ar,image_url,barcode,expiry_date,is_active
+1,MED-001,Panadol Extra,بانادول,Medicine,45.00,50,Pain killer,مسكن,https://placehold.co/50,123456,2026-01-01,1
