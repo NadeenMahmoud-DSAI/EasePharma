@@ -4,7 +4,6 @@ import os
 class ProductModel:
     @staticmethod
     def get_csv_file_path():
-        
         return r"C:\Users\dreams\Desktop\copy of admin\data\pharmacy_ai_data_500.csv"
 
     @staticmethod
@@ -27,14 +26,21 @@ class ProductModel:
                         'image': row.get('image_url', '')
                     })
             return products
-        except:
+        except Exception as e:
             return []
+
+    @staticmethod
+    def get_product_by_id(product_id):
+        all_products = ProductModel.get_all_products()
+        for p in all_products:
+            if str(p['id']) == str(product_id):
+                return p
+        return None
 
     @staticmethod
     def add_product(data):
         path = ProductModel.get_csv_file_path()
         try:
-            # 1. قراءة القديم
             all_rows = []
             if os.path.exists(path):
                 with open(path, mode='r', encoding='utf-8-sig') as f:
@@ -42,16 +48,12 @@ class ProductModel:
                     fieldnames = reader.fieldnames
                     for row in reader:
                         all_rows.append(row)
-            else:
-                return False # لو الملف مش موجود مش هنعرف العناوين
 
-            # 2. حساب ID جديد
             new_id = 1
             if all_rows:
                 ids = [int(r['id']) for r in all_rows if r.get('id') and str(r['id']).isdigit()]
                 if ids: new_id = max(ids) + 1
 
-            # 3. الصف الجديد
             new_row = {
                 'id': str(new_id),
                 'name_en': data['name'],
@@ -59,24 +61,50 @@ class ProductModel:
                 'price': str(data['price']),
                 'stock_quantity': str(data['stock']),
                 'image_url': data.get('image', ''),
-                # بيانات تكميلية
                 'sku': f'PROD-{new_id}', 'name_ar': data['name'], 'description_en': '', 'description_ar': '', 'barcode': '', 'expiry_date': '', 'is_active': '1'
             }
             
-            # ملء الخانات الناقصة
             for field in fieldnames:
                 if field not in new_row: new_row[field] = ''
             
             all_rows.append(new_row)
 
-            # 4. الحفظ
             with open(path, mode='w', newline='', encoding='utf-8-sig') as f:
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
                 writer.writerows(all_rows)
             return True
         except Exception as e:
-            print(f"Error adding: {e}")
+            return False
+
+    @staticmethod
+    def update_product(data):
+        path = ProductModel.get_csv_file_path()
+        all_rows = []
+        updated = False
+        
+        try:
+            with open(path, mode='r', encoding='utf-8-sig') as f:
+                reader = csv.DictReader(f)
+                fieldnames = reader.fieldnames
+                for row in reader:
+                    if str(row.get('id')) == str(data['id']):
+                        row['name_en'] = data['name']
+                        row['category'] = data['category']
+                        row['price'] = data['price']
+                        row['stock_quantity'] = data['stock']
+                        row['image_url'] = data['image']
+                        updated = True
+                    all_rows.append(row)
+
+            if updated:
+                with open(path, mode='w', newline='', encoding='utf-8-sig') as f:
+                    writer = csv.DictWriter(f, fieldnames=fieldnames)
+                    writer.writeheader()
+                    writer.writerows(all_rows)
+                return True
+            return False
+        except Exception as e:
             return False
 
     @staticmethod

@@ -2,7 +2,11 @@
 
 {% block content %}
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Admin Panel - Products List</h1>
+    <h1 class="h2">Search Results</h1>
+    
+    {% if query %}
+        <p class="h5 text-info">Showing {{ products|length }} results for: <strong>"{{ query }}"</strong></p>
+    {% endif %}
     
     <form class="d-flex" role="search" method="GET" action="{{ url_for('admin.products') }}">
         <input class="form-control me-2" type="search" placeholder="Search products..." aria-label="Search" name="q" value="{{ query if query }}">
@@ -10,7 +14,7 @@
     </form>
     
     <div class="btn-toolbar mb-2 mb-md-0">
-      
+        <a href="{{ url_for('admin.products') }}" class="btn btn-outline-secondary">Back to Full List</a>
         <a href="{{ url_for('admin.add_product') }}" class="btn btn-sm btn-primary ms-2">+ Add Product</a>
     </div>
 </div>
@@ -62,7 +66,7 @@
             {% else %}
             <tr>
                 <td colspan="6" class="text-center py-4">
-                    <p class="text-muted mb-0">No products found or CSV error. Please check your data file.</p>
+                    <p class="text-muted mb-0">No products found matching "{{ query }}".</p>
                 </td>
             </tr>
             {% endfor %}
