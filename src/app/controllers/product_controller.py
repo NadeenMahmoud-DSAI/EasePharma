@@ -44,8 +44,9 @@ def cart_view():
 
 @product_bp.route('/checkout', methods=['GET', 'POST'])
 def checkout():
+    # FIXED: Redirect to Home instead of missing Login page
     if 'user_id' not in session:
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('product.home'))
     
     if request.method == 'POST':
         cart = session.get('cart', {})
@@ -60,6 +61,7 @@ def checkout():
 
 @product_bp.route('/orders')
 def order_history():
-    if 'user_id' not in session: return redirect(url_for('auth.login'))
+    # FIXED: Redirect to Home instead of missing Login page
+    if 'user_id' not in session: return redirect(url_for('product.home'))
     orders = OrderModel.get_by_user(get_data_path(), session['user_id'])
     return render_template('customer/order_history.html', orders=orders)
