@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import uuid
-from types import SimpleNamespace
+from werkzeug.security import check_password_hash
 
 class UserModel:
     @staticmethod
@@ -20,28 +20,66 @@ class UserModel:
     @classmethod
     def get_by_email(cls, email, data_path):
         path = cls._file(data_path)
-        if not os.path.exists(path):
+        if not os.path.exists(path): 
             return None
-        df = pd.read_csv(path)
-        user = df[df['email'].astype(str).str.lower() == str(email).lower()]
-        if user.empty:
+        
+        try:
+            df = pd.read_csv(path)
+            # email column exists
+            if 'email' not in df.columns: 
+                return None
+            
+            # Case insensitive
+            user = df[df['email'].astype(str).str.lower() == str(email).lower()]
+            if user.empty: 
+                return None
+            
+            # convert NaN values to empty
+            return user.iloc[0].fillna('').to_dict()
+        except Exception as e:
+            print(f"Error reading users db: {e}")
             return None
-        r = user.iloc[0].to_dict()
-        return r
 
     def save(self, data_path):
         path = self._file(data_path)
-        row = {
+        
+        # 1. Prepare the new user data
+        
+        new_data = {
             'user_id': self.user_id,
             'email': self.email,
             'password_hash': self.password_hash,
             'role': self.role,
-            'full_name': self.full_name,
+            'full_name_en': self.full_name,  
             'phone': self.phone,
-            'address': self.address
+            'address': self.address,
+            'status': 'Active',
+            # empty values for columns we don't collect during register
+            'age': '', 'gender': '', 'governorate': '', 'city': '', 
+            'join_date': pd.Timestamp.now().strftime('%Y-%m-%d'), 
+            'total_spent': 0.0,
+            'first_name_ar': '', 'last_name_ar': ''
         }
-        df = pd.DataFrame([row])
-        if not os.path.exists(path):
-            df.to_csv(path, index=False)
+
+        # 2. Load existing data
+        if os.path.exists(path):
+            try:
+                df = pd.read_csv(path)
+                
+                # Append the new row
+                new_row = pd.DataFrame([new_data])
+                
+                # Combine old and new
+                df_final = pd.concat([df, new_row], ignore_index=True)
+                
+                df_final.to_csv(path, index=False)
+                print(f"User {self.email} saved successfully.")
+                return True
+                
+            except Exception as e:
+                print(f"Error saving user: {e}")
+                return False
         else:
-            df.to_csv(path, mode='a', header=False, index=False)
+            df = pd.DataFrame([new_data])
+            df.to_csv(path, index=False)
+            return True

@@ -28,7 +28,6 @@ def add_to_cart(id):
     flash("Item added to cart!")
     return redirect(request.referrer or url_for('product.home'))
 
-# --- NEW ROUTES ---
 @product_bp.route('/cart')
 def cart_view():
     data_path = get_data_path()

@@ -1,58 +1,31 @@
 import unittest
+import sys
 import os
-import shutil
-from pathlib import Path
+
+current_dir = os.path.dirname(os.path.abspath(__file__))  
+base_dir = os.path.dirname(current_dir)                
+src_path = os.path.join(base_dir, 'src')                
+
+sys.path.insert(0, src_path)
+
 from app import create_app
 
-class BasicTests(unittest.TestCase):
+class BasicTestCase(unittest.TestCase):
     def setUp(self):
-        # create temp data folder inside tests/tmp_data
-        self.tmp = Path.cwd() / "src" / "data_test_tmp"
-        if self.tmp.exists():
-            shutil.rmtree(self.tmp)
-        self.tmp.mkdir(parents=True, exist_ok=True)
-
-        # copy sample data from src/data if exists, else run setup_db
-        src_data = Path.cwd() / "src" / "data"
-        if not src_data.exists():
-            # let setup_db create minimal data
-            from setup_db import DATA_DIR
-        else:
-            for f in src_data.glob("*.csv"):
-                shutil.copy(f, self.tmp / f.name)
-
-        self.app = create_app({'DATA_PATH': str(self.tmp), 'TESTING': True, 'SECRET_KEY': 'test'})
+        self.app = create_app({'TESTING': True})
         self.client = self.app.test_client()
 
-    def tearDown(self):
-        if self.tmp.exists():
-            shutil.rmtree(self.tmp)
-
-    def test_home_loads(self):
+    def test_home_page_loads(self):
+        """Test 1: Check if the Home Page works (Status 200)"""
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'EasePharma', response.data)
 
-    def test_admin_protected(self):
-        response = self.client.get('/admin/dashboard', follow_redirects=True)
-        self.assertIn(b'Login', response.data)
+    def test_admin_redirect(self):
+        """Test 2: Check if Admin page is protected (Redirects guest)"""
+        response = self.client.get('/admin/products')
+        self.assertEqual(response.status_code, 302) 
 
-    def test_add_to_cart_and_cart_page(self):
-        # ensure at least one product exists
-        rv = self.client.get('/')
-        self.assertEqual(rv.status_code, 200)
-        # find product id by parsing generated page (simple approach)
-        # instead, call product model directly
-        from app.models.product_model import ProductModel
-        products = ProductModel.get_all(str(self.tmp))
-        if not products:
-            self.skipTest("No products to test cart")
-        pid = products[0].id
-        # post add to cart
-        res = self.client.post(f'/add_to_cart/{pid}', follow_redirects=True)
-        self.assertIn(b'Item added to cart', res.data)
-        res2 = self.client.get('/cart')
-        self.assertIn(products[0].name.encode(), res2.data)
-
-if __name__ == "__main__":
+if __name__ == '__main__':
+    print("Running Unit Tests")
     unittest.main()

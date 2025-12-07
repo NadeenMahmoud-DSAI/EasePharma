@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Product{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        
+        <div class="d-flex align-items-center mb-4">
+            <a href="{{ url_for('admin.products') }}" class="text-decoration-none me-3" style="color: #008080;">
+                <i class="fas fa-arrow-left fa-lg"></i>
+            </a>
+            <h2 class="fw-bold m-0" style="color: #004d40;">Edit Product: {{ product.name }}</h2>
+        </div>
+
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('admin.edit_product', product_id=product.id) }}">
+                    
+                    <input type="hidden" name="id" value="{{ product.id }}">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small">PRODUCT NAME</label>
+                        <input type="text" name="name" class="form-control form-control-lg" required placeholder="e.g. Panadol Extra"
+                               value="{{ product.name }}">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold text-muted small">CATEGORY</label>
+                            <select name="category" class="form-select">
+                                <option value="Must Haves" {{ 'selected' if product.category == 'Must Haves' }}>Must Haves</option>
+                                <option value="Vitamins" {{ 'selected' if product.category == 'Vitamins' }}>Vitamins</option>
+                                <option value="Personal Care" {{ 'selected' if product.category == 'Personal Care' }}>Personal Care</option>
+                                <option value="Skin Care" {{ 'selected' if product.category == 'Skin Care' }}>Skin Care</option>
+                                <option value="Diabetes" {{ 'selected' if product.category == 'Diabetes' }}>Diabetes</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold text-muted small">PRICE ($)</label>
+                            <input type="number" step="0.01" name="price" class="form-control" required
+                                   value="{{ product.price }}">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted small">STOCK QUANTITY</label>
+                        <input type="number" name="stock" class="form-control" required
+                               value="{{ product.stock }}">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-muted small">IMAGE URL (Optional)</label>
+                        <input type="text" name="image" class="form-control" placeholder="https://..."
+                               value="{{ product.image }}">
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-lg text-white fw-bold" style="background-color: #008080;">Save Changes</button>
+                        <a href="{{ url_for('admin.products') }}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

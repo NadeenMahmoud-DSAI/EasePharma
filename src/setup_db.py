@@ -2,66 +2,47 @@ import pandas as pd
 import os
 from werkzeug.security import generate_password_hash
 
-# Exact filenames you uploaded
-USER_CSV_NAME = "customers_with_age_1000.csv"
-PRODUCT_CSV_NAME = "products.csv"
-ORDER_CSV_NAME = "orders_transactions_1000.csv"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(BASE_DIR, 'data')
 
-def find_file(filename):
-    # Check current folder
-    if os.path.exists(filename): return filename
-    # Check parent folder
-    parent = os.path.join("..", filename)
-    if os.path.exists(parent): return parent
-    return None
+FILE_USERS = os.path.join(BASE_DIR, "customers_with_age_1000.csv")
+FILE_PRODUCTS = os.path.join(BASE_DIR, "pharmacy_ai_data_5000.csv")
+FILE_ORDERS = os.path.join(BASE_DIR, "orders_transactions_1000.csv")
 
-# Ensure data directory exists
-if not os.path.exists('data'):
-    os.makedirs('data')
+if not os.path.exists(DATA_DIR):
+    os.makedirs(DATA_DIR)
 
-print("--- Setting up Database ---")
 
 # 1. USERS
-f_user = find_file(USER_CSV_NAME)
-if f_user:
+if os.path.exists(FILE_USERS):
     try:
-        df = pd.read_csv(f_user)
-        # Add password/role if missing
+        df = pd.read_csv(FILE_USERS)
         if 'password_hash' not in df.columns:
-            print("   -> Generating passwords...")
             df['password_hash'] = generate_password_hash('123456')
         if 'role' not in df.columns:
             df['role'] = 'Customer'
-            df.loc[0, 'role'] = 'Admin' # First user is Admin
-        
-        df.to_csv('data/users.csv', index=False)
-        print(f"✅ Users loaded from {f_user}")
-    except Exception as e:
-        print(f"❌ User Error: {e}")
-else:
-    print(f"⚠️  MISSING: {USER_CSV_NAME} (Move this file into 'src/')")
+            df.loc[df['user_id'] == 1001, 'role'] = 'Admin'
+            
+        df.to_csv(os.path.join(DATA_DIR, 'users.csv'), index=False)
+    except: pass
 
 # 2. PRODUCTS
-f_prod = find_file(PRODUCT_CSV_NAME)
-if f_prod:
+if os.path.exists(FILE_PRODUCTS):
     try:
-        df = pd.read_csv(f_prod)
-        df.to_csv('data/products.csv', index=False)
-        print(f"✅ Products loaded from {f_prod}")
-    except Exception as e:
-        print(f"❌ Product Error: {e}")
-else:
-    print(f"⚠️  MISSING: {PRODUCT_CSV_NAME}")
+        df = pd.read_csv(FILE_PRODUCTS)
+        df['image_url'] = "https://placehold.co/400x400/008080/ffffff?text=Product"
+        df.to_csv(os.path.join(DATA_DIR, 'products.csv'), index=False)
+        print(f"Products restored ({len(df)} records).")
+    except: pass
 
 # 3. ORDERS
-f_ord = find_file(ORDER_CSV_NAME)
-if f_ord:
+if os.path.exists(FILE_ORDERS):
     try:
-        df = pd.read_csv(f_ord)
-        df.to_csv('data/orders.csv', index=False)
-        print(f"✅ Orders loaded from {f_ord}")
+        df = pd.read_csv(FILE_ORDERS)
+        if 'customer_id' in df.columns:
+            df.rename(columns={'customer_id': 'user_id'}, inplace=True)
+        df.to_csv(os.path.join(DATA_DIR, 'orders.csv'), index=False)
+        print(f"Orders restored.")
     except: pass
 else:
-    # Create empty orders file so app doesn't crash
-    pd.DataFrame(columns=['order_id', 'user_id', 'items_summary', 'total_amount', 'status']).to_csv('data/orders.csv', index=False)
-    print("⚠️  Created empty orders.csv")
+    pd.DataFrame(columns=['order_id','user_id','total_amount','status']).to_csv(os.path.join(DATA_DIR, 'orders.csv'), index=False)

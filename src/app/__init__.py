@@ -2,30 +2,45 @@ import os
 from flask import Flask
 
 def create_app(test_config=None):
+    current_folder = os.path.dirname(os.path.abspath(__file__))
+    static_path = os.path.join(current_folder, 'views', 'static')
+    template_path = os.path.join(current_folder, 'views', 'templates')
+
+
     app = Flask(
         __name__,
-        template_folder='views/templates',
-        static_folder='views/static'
+        template_folder=template_path,
+        static_folder=static_path
     )
 
-    # default config
-    base_dir = os.getcwd()  # project root where src folder is
-    default_data = os.path.join(base_dir, 'src', 'data')
+    # 2. CONFIGURATION
+    src_folder = os.path.dirname(current_folder)
+    data_dir = os.path.join(os.path.dirname(src_folder), 'src', 'data')
+    if not os.path.exists(data_dir):
+        data_dir = os.path.join(src_folder, 'data')
+
     app.config.from_mapping(
-        SECRET_KEY=os.environ.get('SECRET_KEY', 'easepharma_secret_key_2025'),
-        DATA_PATH=os.environ.get('DATA_PATH', default_data)
+        SECRET_KEY='easepharma_secret_key_2025',
+        DATA_PATH=data_dir
     )
 
-    if test_config:
-        app.config.update(test_config)
+    # 3.(Controllers)
+    try:
+        from app.controllers.product_controller import product_bp
+        app.register_blueprint(product_bp)
+    except ImportError as e:
+        print(f"Product Controller Error: {e}")
 
-    # Register blueprints
-    from app.controllers.auth_controller import auth_bp
-    from app.controllers.product_controller import product_bp
-    from app.controllers.admin_controller import admin_bp
+    try:
+        from app.controllers.auth_controller import auth_bp
+        app.register_blueprint(auth_bp)
+    except ImportError as e:
+        print(f"Auth Controller Error: {e}")
 
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(product_bp)
-    app.register_blueprint(admin_bp)
+    try:
+        from app.controllers.admin_controller import admin_bp
+        app.register_blueprint(admin_bp)
+    except ImportError as e:
+        print(f"Admin Controller Error: {e}")
 
     return app

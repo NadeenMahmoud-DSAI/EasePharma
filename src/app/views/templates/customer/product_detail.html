@@ -1,21 +1,17 @@
 {% extends "base.html" %}
 {% block title %}{{ product.name }}{% endblock %}
 {% block content %}
-<div class="card shadow border-0 p-4">
-    <div class="row">
-        <div class="col-md-4 text-center">
-            <img src="{{ product.image }}" class="img-fluid" style="max-height: 300px;">
-        </div>
-        <div class="col-md-8">
-            <h2 class="fw-bold" style="color: var(--primary-teal);">{{ product.name }}</h2>
-            <span class="badge bg-secondary mb-3">{{ product.category }}</span>
-            <p class="lead">{{ product.description }}</p>
-            <h3 class="text-dark mb-4">${{ product.price }}</h3>
-            <form action="{{ url_for('product.add_to_cart', id=product.id) }}" method="POST">
-                <button type="submit" class="btn btn-add-cart btn-lg px-5">Add to Cart</button>
-                <a href="{{ url_for('product.home') }}" class="btn btn-outline-secondary btn-lg ms-2">Back</a>
-            </form>
-        </div>
+<div class="card shadow border-0 p-4"><div class="row">
+    <div class="col-md-4 text-center"><img src="{{ product.image }}" class="img-fluid" style="max-height: 300px;"></div>
+    <div class="col-md-8">
+        <h2 class="fw-bold" style="color: #008080;">{{ product.name }}</h2>
+        <span class="badge bg-secondary mb-3">{{ product.category }}</span>
+        <p class="lead">{{ product.description }}</p>
+        <h3 class="text-dark mb-4">${{ product.price }}</h3>
+        <form action="{{ url_for('product.add_to_cart', id=product.id) }}" method="POST">
+            <button type="submit" class="btn btn-lg px-5 text-white" style="background-color: #008080;">Add to Cart</button>
+            <a href="{{ url_for('product.home') }}" class="btn btn-secondary btn-lg ms-2">Back</a>
+        </form>
     </div>
-</div>
+</div></div>
 {% endblock %}

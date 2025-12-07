@@ -1,20 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Home - EasePharma{% endblock %}
-
+{% block title %}Home{% endblock %}
 {% block content %}
-
-<!-- hero/info -->
-<div class="promo-box mb-4 text-center">
-  <strong>Order here. NOW — Get fast delivery on all OTC medicines.</strong>
+<div class="promo-box mb-4 text-center p-3 rounded" style="background-color: #e0f2f1; color: #004d40; font-weight: bold;">
+    Order here. NOW — Get fast delivery on all OTC medicines.
 </div>
 
-<!-- categories -->
 <section class="mb-5">
-  <h4 class="section-title">Shop by Categories</h4>
-  <div class="row g-3 categories-row">
-    {% for name in ['Must Haves','Winter Store','Vitamins & Supply','Personal Care','Diabetes essentials','Health Concerns','Skin Care'] %}
+  <h5 class="fw-bold mb-3">Shop by Categories</h5>
+  <div class="row g-3">
+    {% for name in ['Must Haves','Winter Store','Vitamins & Supply','Personal Care','Diabetes essentials','Health Concerns'] %}
       <div class="col-6 col-md-4 col-lg-2">
-        <a href="{{ url_for('product.search') }}?q={{ name }}" class="category-card d-flex align-items-center justify-content-center">
+        <a href="{{ url_for('product.search') }}?q={{ name }}" class="d-flex align-items-center justify-content-center p-3 rounded text-decoration-none text-center" style="background-color: #e0f2f1; color: #00695c; font-weight: 500; height: 100%;">
           {{ name }}
         </a>
       </div>
@@ -22,61 +18,28 @@
   </div>
 </section>
 
-<!-- featured -->
 <section class="mb-5">
-  <h4 class="section-title">Featured Products</h4>
-
+  <h5 class="fw-bold mb-3">Featured Products</h5>
   {% if products %}
     <div class="row g-4">
       {% for p in products %}
-        <div class="col-6 col-md-3 col-lg-2">
-          <div class="product-card">
-            <div class="product-image">
-              <img src="{{ p.image or url_for('static', filename='placeholder.png') }}" alt="{{ p.name }}">
-            </div>
-            <div class="product-meta text-center">
-              <div class="product-name text-truncate">{{ p.name }}</div>
-              <div class="product-price">${{ '%.2f'|format(p.price) }}</div>
-              <form action="{{ url_for('product.add_to_cart', id=p.id) }}" method="POST" class="mt-2">
-                {% if p.stock|int > 0 %}
-                  <button class="btn btn-sm btn-teal w-100">Add</button>
-                {% else %}
-                  <button class="btn btn-sm btn-secondary w-100" disabled>Out of stock</button>
-                {% endif %}
-              </form>
+        <div class="col-6 col-md-3 col-lg-2"> <div class="card h-100 border-0 shadow-sm product-card">
+            <div class="card-body p-2 d-flex flex-column text-center">
+                <div class="mb-2 d-flex align-items-center justify-content-center" style="height: 120px; background-color: #f8f9fa; border-radius: 8px;">
+                    <img src="{{ p.image or url_for('static', filename='placeholder.png') }}" alt="{{ p.name }}" style="max-height: 100px; max-width: 100%;">
+                </div>
+                <div class="product-name text-truncate mb-1" style="font-size: 0.9rem;" title="{{ p.name }}">{{ p.name }}</div>
+                <div class="product-price fw-bold" style="color: #008080;">${{ '%.2f'|format(p.price) }}</div>
+                <form action="{{ url_for('product.add_to_cart', id=p.id) }}" method="POST" class="mt-auto pt-2">
+                    <button class="btn btn-sm w-100 text-white" style="background-color: #008080;">Add</button>
+                </form>
             </div>
           </div>
         </div>
       {% endfor %}
     </div>
   {% else %}
-    <div class="text-center text-muted py-5">
-      <p>No products found. Please check data/products.csv</p>
-    </div>
+    <div class="text-center text-muted py-5">No products found. Run setup_db.py</div>
   {% endif %}
 </section>
-
-<!-- why choose / stats -->
-<section class="why-choose py-4">
-  <div class="row text-center">
-    <div class="col-md-3 mb-3">
-      <div class="stat-num">51 Million+</div>
-      <div class="stat-label">Registered users</div>
-      <div class="stat-small">as of Nov 23, 2025</div>
-    </div>
-    <div class="col-md-3 mb-3">
-      <div class="stat-num">71 Million+</div>
-      <div class="stat-label">Orders on EasePharma</div>
-    </div>
-    <div class="col-md-3 mb-3">
-      <div class="stat-num">60000+</div>
-      <div class="stat-label">Unique items sold</div>
-    </div>
-    <div class="col-md-3 mb-3">
-      <div class="stat-num">19000+</div>
-      <div class="stat-label">Pin codes serviced</div>
-    </div>
-  </div>
-</section>
-
 {% endblock %}

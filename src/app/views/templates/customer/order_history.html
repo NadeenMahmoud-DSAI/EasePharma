@@ -1,17 +1,8 @@
 {% extends "base.html" %}
-{% block title %}Orders - EasePharma{% endblock %}
+{% block title %}Orders{% endblock %}
 {% block content %}
 <h3>Your Orders</h3>
 {% if orders %}
-  <ul class="list-group">
-    {% for o in orders %}
-      <li class="list-group-item">
-        <strong>Order:</strong> {{ o.order_id }} — ${{ "%.2f"|format(o.total_amount) }} — {{ o.status }} — {{ o.created_at }}
-        <div><small>{{ o.items_summary }}</small></div>
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>No orders found.</p>
-{% endif %}
+  <ul class="list-group">{% for o in orders %}<li class="list-group-item"><strong>Order:</strong> {{ o.order_id }} — ${{ "%.2f"|format(o.total_amount) }} — {{ o.status }}</li>{% endfor %}</ul>
+{% else %}<p>No orders found.</p>{% endif %}
 {% endblock %}

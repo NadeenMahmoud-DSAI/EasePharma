@@ -19,7 +19,6 @@ class OrderModel:
 
     @classmethod
     def create_from_cart(cls, data_path, user_id, cart):
-        # cart is dict {prod_id: qty}
         items = []
         total = 0.0
         for pid, qty in cart.items():

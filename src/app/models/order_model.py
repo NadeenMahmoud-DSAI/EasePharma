@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import datetime
 import uuid
 from app.models.product_model import ProductModel
+from types import SimpleNamespace
 
 class OrderModel:
     @staticmethod
@@ -60,7 +61,7 @@ class OrderModel:
         if not os.path.exists(path): return []
         try:
             df = pd.read_csv(path)
-            # Filter by user_id string to be safe
+            # Filter by user_id
             user_orders = df[df['user_id'].astype(str) == str(user_id)]
             return [cls(r['order_id'], r['user_id'], r['items_summary'], r['total_amount'], r['status'], r['created_at']) for _, r in user_orders.iterrows()]
         except: return []

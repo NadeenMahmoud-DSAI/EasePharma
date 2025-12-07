@@ -1,0 +1,64 @@
+# src/app/__init__.py
+import os
+from flask import Flask
+
+def create_app(test_config: dict = None):
+    """
+    Application factory for EasePharma.
+    - test_config: optional dict to override config (used by tests)
+    """
+    app = Flask(__name__, instance_relative_config=False)
+
+    # Basic config
+    app.config.from_mapping(
+        SECRET_KEY=os.environ.get("SECRET_KEY", "dev-secret-key"),
+        # default data path (project-root/src/data). Can be overridden with ENV or test_config
+        DATA_PATH=os.environ.get("DATA_PATH", os.path.join(os.getcwd(), "src", "data")),
+    )
+
+    # Allow test overrides
+    if test_config:
+        app.config.update(test_config)
+
+    # Ensure data dir exists
+    os.makedirs(app.config["DATA_PATH"], exist_ok=True)
+
+    # Register blueprints (import inside factory to avoid circular imports)
+    # These module names match the controllers we added/edited earlier.
+    try:
+        from app.controllers.auth_controller import auth_bp
+    except Exception:
+        auth_bp = None
+
+    try:
+        from app.controllers.admin_controller import admin_bp
+    except Exception:
+        admin_bp = None
+
+    try:
+        from app.controllers.product_controller import product_bp
+    except Exception:
+        product_bp = None
+
+    try:
+        from app.controllers.order_controller import order_bp
+    except Exception:
+        order_bp = None
+
+    # Register blueprints if available
+    if auth_bp:
+        app.register_blueprint(auth_bp, url_prefix="/auth")
+    if admin_bp:
+        app.register_blueprint(admin_bp, url_prefix="/admin")
+    if product_bp:
+        # product home routes are at root
+        app.register_blueprint(product_bp)
+    if order_bp:
+        app.register_blueprint(order_bp, url_prefix="/order")
+
+    # Simple index route fallback (optional)
+    @app.route("/ping")
+    def ping():
+        return "pong"
+
+    return app
