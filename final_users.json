@@ -1,0 +1,12 @@
+[
+    {
+        "email": "menna@gmail.com",
+        "password": "scrypt:32768:8:1$s7mxKcpclO6nodne$379bde720c76d71f6afde5e68ba497b2de1f1976e9460aa266a380fa314f71a85bc63997aaa3070e1dbda394d6ff7642cf9aacf5f0579c499d9620d2e3fd013e",
+        "full_name": "menna"
+    },
+    {
+        "email": "nadeen@gmail.com",
+        "password": "scrypt:32768:8:1$fZloXwENbbSoRuEb$affd262a55cd508094b84a7578f35e318c600d2837a0fa0a6499b426f7701612df4de525594876f6a797aa73fc505e384c1688990dafab5348ba536bd3b7fe82",
+        "full_name": "nadeen"
+    }
+]
