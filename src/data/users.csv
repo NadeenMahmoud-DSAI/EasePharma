@@ -1,3 +1,0 @@
-user_id,email,password_hash,role,full_name_en,phone,address,status,age,gender,governorate,city,join_date,total_spent,first_name_ar,last_name_ar
-d637d4e660,admin@gmail.com,scrypt:32768:8:1$CLAYC7DKu13ZHUGN$5e92ceacb8d780ffb9bb3f289aaebce94bd7337ab377df120ee47ec332a351c23d538a42c6d5ed61de3f89988a02e4fcfe7a9d40fcd995b9fd130740c1609e38,Admin,System Admin,,,Active,,,,,2025-12-07,0.0,,
-2a6bf668af,nadeen@gmail.com,scrypt:32768:8:1$zhBltOscw8JqRdMh$27c3289ffb3bf70d7a07c3671336c60f95d83fd9906cb380a652601ea3b3db79ff4060afdfcb53a27b30482f0ebfdc54b4b0b0420cff3493fac953f2d393ae6f,Customer,Nadeen Mahmoud,01021862006,شارع 28,Active,,,,,2025-12-07,0.0,,
