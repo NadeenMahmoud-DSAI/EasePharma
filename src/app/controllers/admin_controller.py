@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, request, current_app, session, flash
 from app.models.product_model import ProductModel
-
 from app.models.order_model import OrderModel
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -10,8 +9,6 @@ def get_data_path():
 
 @admin_bp.before_request
 def require_admin():
-    if current_app.config.get('TESTING'):
-        return None
     if 'role' not in session or session['role'] != 'Admin':
         flash("Access Denied: Admins only.")
         return redirect(url_for('auth.login'))
@@ -23,6 +20,7 @@ def index():
 @admin_bp.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
     data_path = get_data_path()
+    
     if request.method == 'POST':
         order_id = request.form.get('order_id')
         new_status = request.form.get('status')
@@ -30,7 +28,9 @@ def dashboard():
             OrderModel.update_status(data_path, order_id, new_status)
             flash(f"Order {order_id} updated to {new_status}")
             return redirect(url_for('admin.dashboard'))
+
     all_orders = OrderModel.get_all(data_path)
+    
     total_revenue = sum(float(getattr(o, 'total_amount', 0) or 0) for o in all_orders if getattr(o, 'status', '') != 'Cancelled')
     pending_count = sum(1 for o in all_orders if getattr(o, 'status', '') == 'Pending')
     delivered_count = sum(1 for o in all_orders if getattr(o, 'status', '') == 'Delivered')
@@ -44,7 +44,6 @@ def dashboard():
                                'delivered': delivered_count,
                                'total': total_orders
                            })
-# PRODUCT 
 
 @admin_bp.route('/products')
 def products():
@@ -94,7 +93,6 @@ def edit_product(product_id):
         return redirect(url_for('admin.products'))
         
     return render_template('admin/edit_product.html', product=product)
-
 
 @admin_bp.route('/support')
 def support_inbox():
