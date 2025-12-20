@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow border-0">
+            <div class="card-body p-4">
+                <h3 class="text-center mb-4" style="color: var(--primary-teal);">Register</h3>
+                <form method="POST">
+                    <div class="mb-3"><label>Full Name</label><input type="text" name="full_name" class="form-control"></div>
+                    <div class="mb-3"><label>Email</label><input type="email" name="email" class="form-control" required></div>
+                    <div class="mb-3"><label>Password (min 8 chars)</label><input type="password" name="password" class="form-control" required></div>
+                    <div class="mb-3"><label>Phone</label><input type="text" name="phone" class="form-control"></div>
+                    <div class="mb-3"><label>Address</label><input type="text" name="address" class="form-control"></div>
+                    <button type="submit" class="btn btn-add-cart w-100 py-2">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
