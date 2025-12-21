@@ -1,0 +1,46 @@
+/* Custom CSS - Teal/Clean Theme */
+:root {
+  --primary-teal: #008080;
+  --muted: #e9f7f6;
+  --accent: #e0f2f1;
+  --text: #233;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #f4f7f6;
+  color: var(--text);
+  margin: 0;
+}
+
+/* Header */
+.site-header { background: #fff; }
+.brand-logo { font-size:24px; font-weight:700; color: var(--primary-teal); }
+.brand-sub { font-size:12px; color:#666; }
+.header-sep { height:6px; background:var(--primary-teal); }
+
+/* Chat Styling */
+.chat-container { background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden; }
+.chat-header { background: var(--primary-teal); color: white; padding: 15px; font-weight: 600; }
+.chat-box { height: 400px; overflow-y: scroll; padding: 20px; background: #f9f9f9; }
+
+/* Messages */
+.msg-row { display: flex; margin-bottom: 15px; }
+.msg-row.customer { justify-content: flex-end; }
+.msg-row.admin { justify-content: flex-start; }
+
+.msg-bubble { 
+    max-width: 70%; padding: 10px 15px; border-radius: 15px; position: relative; font-size: 15px; line-height: 1.4;
+}
+.msg-row.customer .msg-bubble { 
+    background: var(--primary-teal); color: white; border-bottom-right-radius: 2px; 
+}
+.msg-row.admin .msg-bubble { 
+    background: #e9ecef; color: #333; border-bottom-left-radius: 2px; 
+}
+.msg-meta { font-size: 11px; opacity: 0.7; margin-bottom: 4px; display: block; }
+
+/* Buttons & Inputs */
+.btn-teal { background: var(--primary-teal); color: white; border: none; padding: 10px 20px; border-radius: 6px; }
+.btn-teal:hover { background: #006666; color: white; }
+.input-area { padding: 20px; background: white; border-top: 1px solid #eee; }

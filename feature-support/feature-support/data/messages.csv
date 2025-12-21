@@ -1,0 +1,4 @@
+msg_id,user_id,sender_role,message,timestamp
+1,1001,Customer,Help! My order is late.,2025-01-01 10:00:00
+2,1001,Admin,Checking now...,2025-01-01 10:05:00
+3,1002,Customer,Do you sell Aspirin?,2025-01-02 12:00:00
