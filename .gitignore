@@ -1,0 +1,1 @@
+"__pycache__/" | Out-File .gitignore -Encoding utf8
