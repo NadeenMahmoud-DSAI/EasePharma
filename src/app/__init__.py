@@ -2,19 +2,19 @@ import os
 from flask import Flask
 
 def create_app(test_config=None):
-    current_folder = os.path.dirname(os.path.abspath(__file__))
-    static_path = os.path.join(current_folder, 'views', 'static')
-    template_path = os.path.join(current_folder, 'views', 'templates')
+    app_folder = os.path.dirname(os.path.abspath(__file__))
+    static_path = os.path.join(app_folder, 'views', 'static')
+    template_path = os.path.join(app_folder, 'views', 'templates')
 
-
+    
     app = Flask(
         __name__,
         template_folder=template_path,
         static_folder=static_path
     )
 
-    # 2. CONFIGURATION
-    src_folder = os.path.dirname(current_folder)
+    # 3. CONFIGURATION
+    src_folder = os.path.dirname(app_folder)
     data_dir = os.path.join(os.path.dirname(src_folder), 'src', 'data')
     if not os.path.exists(data_dir):
         data_dir = os.path.join(src_folder, 'data')
@@ -24,7 +24,7 @@ def create_app(test_config=None):
         DATA_PATH=data_dir
     )
 
-    # 3.(Controllers)
+    # 4. REGISTER BLUEPRINTS
     try:
         from app.controllers.product_controller import product_bp
         app.register_blueprint(product_bp)

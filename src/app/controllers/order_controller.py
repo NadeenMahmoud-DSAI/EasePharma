@@ -19,7 +19,6 @@ ORDERS_FILE = "orders.csv"
 FIELDNAMES = ["order_id", "user_email", "total", "items", "timestamp"]
 
 
-#  utility functions
 def get_orders_csv_path():
     data_dir = current_app.config.get("DATA_PATH")
     os.makedirs(data_dir, exist_ok=True)
@@ -29,7 +28,6 @@ def get_orders_csv_path():
 def write_order(user_email: str, total: float, items: list):
     path = get_orders_csv_path()
 
-    # Load existing orders
     existing = []
     if os.path.exists(path):
         with open(path, newline="", encoding="utf-8") as f:
@@ -47,7 +45,6 @@ def write_order(user_email: str, total: float, items: list):
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 
-    # Write back
     with open(path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
         writer.writeheader()

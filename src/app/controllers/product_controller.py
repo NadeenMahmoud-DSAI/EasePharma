@@ -2,6 +2,7 @@ import os
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash, current_app
 from app.models.product_model import ProductModel
 from app.models.order_model import OrderModel
+from app.models.message_model import MessageModel
 
 product_bp = Blueprint('product', __name__)
 
@@ -63,3 +64,36 @@ def order_history():
     if 'user_id' not in session: return redirect(url_for('auth.login'))
     orders = OrderModel.get_by_user(get_data_path(), session['user_id'])
     return render_template('customer/order_history.html', orders=orders)
+
+# ORDER TRACKING
+@product_bp.route('/track/<order_id>')
+def track_order(order_id):
+    if 'user_id' not in session: 
+        return redirect(url_for('auth.login'))
+    data_path = get_data_path()
+    orders = OrderModel.get_all(data_path)
+    order = next((o for o in orders if str(o.order_id) == str(order_id)), None)
+    
+    if not order:
+        flash("Order not found.")
+        return redirect(url_for('product.order_history'))
+        
+    return render_template('customer/track_order.html', order=order)
+
+#SUPPORT ROUTE
+@product_bp.route('/support', methods=['GET', 'POST'])
+def customer_support():
+    if 'user_id' not in session: 
+        return redirect(url_for('auth.login'))
+    
+    data_path = get_data_path()
+    user_id = session['user_id']
+    
+    if request.method == 'POST':
+        msg = request.form.get('message')
+        if msg:
+            MessageModel.send_message(data_path, user_id, 'Customer', msg)
+        return redirect(url_for('product.customer_support'))
+        
+    messages = MessageModel.get_conversation(data_path, user_id)
+    return render_template('customer/support.html', messages=messages)

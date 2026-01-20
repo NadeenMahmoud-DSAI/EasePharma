@@ -13,13 +13,12 @@
     <div class="container d-flex align-items-center justify-content-between">
       
       <a class="text-decoration-none d-flex align-items-center" href="{{ url_for('product.home') }}">
-         <img src="{{ url_for('static', filename='logo-32.jpg') }}" alt="EasePharma Logo" width="32" height="32" class="me-2">
-         
-         <h4 class="m-0 fw-bold" style="color: #008080;">EasePharma</h4>
+          <img src="{{ url_for('static', filename='my_logo.jpg') }}" alt="EasePharma Logo" width="32" height="32" class="me-2">
+          <h4 class="m-0 fw-bold" style="color: #008080;">EasePharma</h4>
       </a>
 
       <form action="{{ url_for('product.search') }}" method="get" class="d-flex w-50 mx-auto">
-        <input name="q" class="form-control" style="border-radius: 20px 0 0 20px; border-right: 0;" placeholder="Search for medicines..." value="{{ request.args.get('q','') }}">
+        <input name="q" class="form-control" style="border-radius: 20px 0 0 20px; border-right: 0;" placeholder="Search..." value="{{ request.args.get('q','') }}">
         <button class="btn btn-outline-secondary" style="border-radius: 0 20px 20px 0; border-left: 0; background-color: #008080; color: white; border-color: #008080;">
              <i class="fas fa-search"></i>
         </button>
@@ -42,10 +41,23 @@
 
         {% if session.get('user_id') %}
             <div class="d-flex align-items-center gap-2">
-                <span class="fw-bold small text-dark">{{ session.get('user_name') }}</span>
+                <span class="fw-bold small text-dark me-2">{{ session.get('user_name') }}</span>
                 
                 {% if session.get('role') == 'Admin' %}
-                    <a href="{{ url_for('admin.products') }}" class="btn btn-sm text-white" style="background-color: #333;">Admin</a>
+                    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-sm btn-danger fw-bold">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('admin.products') }}" class="btn btn-sm btn-dark">
+                        <i class="fas fa-boxes"></i> Inventory
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('product.order_history') }}" class="btn btn-sm btn-outline-dark" title="View Past Orders">
+                        <i class="fas fa-box-open"></i> My Orders
+                    </a>
+
+                    <a href="{{ url_for('product.customer_support') }}" class="btn btn-sm btn-outline-info">
+                        <i class="fas fa-headset"></i> Support
+                    </a>
                 {% endif %}
 
                 <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-outline-danger" title="Logout">

@@ -25,26 +25,20 @@ class UserModel:
         
         try:
             df = pd.read_csv(path)
-            # email column exists
             if 'email' not in df.columns: 
                 return None
             
-            # Case insensitive
             user = df[df['email'].astype(str).str.lower() == str(email).lower()]
             if user.empty: 
                 return None
             
-            # convert NaN values to empty
             return user.iloc[0].fillna('').to_dict()
         except Exception as e:
             print(f"Error reading users db: {e}")
             return None
 
     def save(self, data_path):
-        path = self._file(data_path)
-        
-        # 1. Prepare the new user data
-        
+        path = self._file(data_path)        
         new_data = {
             'user_id': self.user_id,
             'email': self.email,
@@ -54,22 +48,18 @@ class UserModel:
             'phone': self.phone,
             'address': self.address,
             'status': 'Active',
-            # empty values for columns we don't collect during register
             'age': '', 'gender': '', 'governorate': '', 'city': '', 
             'join_date': pd.Timestamp.now().strftime('%Y-%m-%d'), 
             'total_spent': 0.0,
             'first_name_ar': '', 'last_name_ar': ''
         }
 
-        # 2. Load existing data
         if os.path.exists(path):
             try:
                 df = pd.read_csv(path)
                 
-                # Append the new row
                 new_row = pd.DataFrame([new_data])
                 
-                # Combine old and new
                 df_final = pd.concat([df, new_row], ignore_index=True)
                 
                 df_final.to_csv(path, index=False)

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Track Order #{{ order.order_id }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="card shadow-sm border-0 mx-auto" style="max-width: 800px;">
+        <div class="card-header bg-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="m-0 fw-bold text-secondary">Tracking Order <span style="color: #008080;">#{{ order.order_id }}</span></h5>
+                <a href="{{ url_for('product.order_history') }}" class="btn btn-sm btn-outline-dark">Back to Orders</a>
+            </div>
+        </div>
+        
+        <div class="card-body p-5">
+            
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-1" style="color: #008080;">{{ order.status }}</h2>
+                <p class="text-muted">Expected Delivery: Within 3-5 Business Days</p>
+            </div>
+
+            <div class="position-relative mb-5 px-4">
+                <div class="progress" style="height: 6px;">
+                    {% if order.status == 'Delivered' %}
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                    {% elif order.status == 'Shipped' %}
+                        <div class="progress-bar bg-info" role="progressbar" style="width: 66%"></div>
+                    {% elif order.status == 'Pending' %}
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: 33%"></div>
+                    {% elif order.status == 'Cancelled' %}
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: 100%"></div>
+                    {% else %}
+                        <div class="progress-bar bg-secondary" role="progressbar" style="width: 5%"></div>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex justify-content-between mt-3 text-center small text-muted">
+                    <div style="width: 33%;">
+                        <i class="fas fa-clipboard-check fa-lg mb-2 text-dark"></i>
+                        <div class="fw-bold">Order Placed</div>
+                    </div>
+                    <div style="width: 33%;">
+                        <i class="fas fa-truck fa-lg mb-2 {% if order.status in ['Shipped', 'Delivered'] %}text-dark{% endif %}"></i>
+                        <div class="fw-bold">Shipped</div>
+                    </div>
+                    <div style="width: 33%;">
+                        <i class="fas fa-box-open fa-lg mb-2 {% if order.status == 'Delivered' %}text-dark{% endif %}"></i>
+                        <div class="fw-bold">Delivered</div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <h6 class="text-uppercase text-muted small fw-bold">Items</h6>
+                    <p class="mb-0">{{ order.items_summary }}</p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-uppercase text-muted small fw-bold">Date</h6>
+                    <p class="mb-0">{{ order.created_at }}</p>
+                </div>
+                <div class="col-md-3 text-end">
+                    <h6 class="text-uppercase text-muted small fw-bold">Total</h6>
+                    <p class="fw-bold text-success lead">${{ "%.2f"|format(order.total_amount) }}</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

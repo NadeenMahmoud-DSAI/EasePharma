@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
+
 {% block content %}
 <div class="promo-box mb-4 text-center p-3 rounded" style="background-color: #e0f2f1; color: #004d40; font-weight: bold;">
     Order here. NOW — Get fast delivery on all OTC medicines.
@@ -8,13 +9,43 @@
 <section class="mb-5">
   <h5 class="fw-bold mb-3">Shop by Categories</h5>
   <div class="row g-3">
-    {% for name in ['Must Haves','Winter Store','Vitamins & Supply','Personal Care','Diabetes essentials','Health Concerns'] %}
-      <div class="col-6 col-md-4 col-lg-2">
-        <a href="{{ url_for('product.search') }}?q={{ name }}" class="d-flex align-items-center justify-content-center p-3 rounded text-decoration-none text-center" style="background-color: #e0f2f1; color: #00695c; font-weight: 500; height: 100%;">
-          {{ name }}
-        </a>
-      </div>
-    {% endfor %}
+    
+    <div class="col-6 col-md-4 col-lg-2">
+      <a href="{{ url_for('product.search', q='Must Haves') }}" class="d-flex align-items-center justify-content-center p-3 rounded text-decoration-none text-center" style="background-color: #e0f2f1; color: #00695c; font-weight: 500; height: 100%;">
+        Must Haves
+      </a>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-2">
+      <a href="{{ url_for('product.search', q='Medicine') }}" class="d-flex align-items-center justify-content-center p-3 rounded text-decoration-none text-center" style="background-color: #e0f2f1; color: #00695c; font-weight: 500; height: 100%;">
+        Medicines
+      </a>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-2">
+      <a href="{{ url_for('product.search', q='Vitamins') }}" class="d-flex align-items-center justify-content-center p-3 rounded text-decoration-none text-center" style="background-color: #e0f2f1; color: #00695c; font-weight: 500; height: 100%;">
+        Vitamins
+      </a>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-2">
+      <a href="{{ url_for('product.search', q='Personal Care') }}" class="d-flex align-items-center justify-content-center p-3 rounded text-decoration-none text-center" style="background-color: #e0f2f1; color: #00695c; font-weight: 500; height: 100%;">
+        Personal Care
+      </a>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-2">
+      <a href="{{ url_for('product.search', q='Diabetes') }}" class="d-flex align-items-center justify-content-center p-3 rounded text-decoration-none text-center" style="background-color: #e0f2f1; color: #00695c; font-weight: 500; height: 100%;">
+        Diabetes
+      </a>
+    </div>
+
+    <div class="col-6 col-md-4 col-lg-2">
+      <a href="{{ url_for('product.search', q='Skin Care') }}" class="d-flex align-items-center justify-content-center p-3 rounded text-decoration-none text-center" style="background-color: #e0f2f1; color: #00695c; font-weight: 500; height: 100%;">
+        Skin Care
+      </a>
+    </div>
+
   </div>
 </section>
 
@@ -23,16 +54,21 @@
   {% if products %}
     <div class="row g-4">
       {% for p in products %}
-        <div class="col-6 col-md-3 col-lg-2"> <div class="card h-100 border-0 shadow-sm product-card">
+        <div class="col-6 col-md-3 col-lg-2"> 
+          <div class="card h-100 border-0 shadow-sm product-card">
             <div class="card-body p-2 d-flex flex-column text-center">
+                
                 <div class="mb-2 d-flex align-items-center justify-content-center" style="height: 120px; background-color: #f8f9fa; border-radius: 8px;">
                     <img src="{{ p.image or url_for('static', filename='placeholder.png') }}" alt="{{ p.name }}" style="max-height: 100px; max-width: 100%;">
                 </div>
+                
                 <div class="product-name text-truncate mb-1" style="font-size: 0.9rem;" title="{{ p.name }}">{{ p.name }}</div>
                 <div class="product-price fw-bold" style="color: #008080;">${{ '%.2f'|format(p.price) }}</div>
+                
                 <form action="{{ url_for('product.add_to_cart', id=p.id) }}" method="POST" class="mt-auto pt-2">
                     <button class="btn btn-sm w-100 text-white" style="background-color: #008080;">Add</button>
                 </form>
+
             </div>
           </div>
         </div>

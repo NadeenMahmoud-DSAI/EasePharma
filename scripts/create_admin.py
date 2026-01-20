@@ -66,7 +66,7 @@ def create_admin(email, password):
     print("Admin created successfully.")
 
 if __name__ == "__main__":
-    print("--- Create Admin User ---")
+    print("Create Admin User")
     email = input("Admin email (default: admin@gmail.com): ").strip()
     if not email:
         email = "admin@gmail.com"
